@@ -1,0 +1,27 @@
+fair is 1671
+strike is 303
+108 times strike
+divided fair
+108 minus that
+half that
+
+fair = Decimal(1671)
+that = fair
+strike = Decimal(303)
+that = strike
+that = Decimal(108) * strike
+that = that / fair
+that = Decimal(108) - that
+that = that / 2
+
+name (bound, unbound)
+number
+
+p.word('fair').word('is').word('1671').line()
+
+UnboundName(name)
+BoundName(name)
+Is()
+
+
+is bound?
