@@ -21,15 +21,3 @@ that = Decimal(108) * strike
 that = that / fair
 that = Decimal(108) - that
 that = that / 2
-
-name (bound, unbound)
-number
-
-p.word('fair').word('is').word('1671').line()
-
-UnboundName(name)
-BoundName(name)
-Is()
-
-
-is bound?
