@@ -24,7 +24,6 @@ class Program(object):
         self.messages = []
         self.responses = []
         self.sym2val = collections.defaultdict(list)
-        self.thats = []
 
     def message(self, message):
         words = message.split()
@@ -35,7 +34,8 @@ class Program(object):
 
         self.messages.append(message)
         self.responses.append(response)
-        self.thats.append(last)
+        if type(last) is Number:
+            self.sym2val['that'].append(last)
 
         return response
 
@@ -66,7 +66,9 @@ class Is(object):
             return number #TODO: this prevents complex expressions
         except decimal.InvalidOperation:
             if word in sym2val:
-                sym2val[self.symbol].append(sym2val[word][-1])
+                number = sym2val[word][-1]
+                sym2val[self.symbol].append(number)
+                return number
             else:
                 #TODO: can symbols point to symbols?
                 return Error("Sorry, I don't want to point '%s' to '%s' when I don't know what '%s' means" %  (self.symbol, word, word))
