@@ -1,9 +1,17 @@
-fair is 1671
-strike is 303
-108 times strike
-divided fair
-108 minus that
-half that
+> 1671
+1671
+> fair is 1671
+1671
+> strike is 303
+303
+> 108 times strike
+32724
+> over fair
+19.58
+> 108 minus that
+88.41
+> over 2
+44.20
 
 fair = Decimal(1671)
 that = fair
