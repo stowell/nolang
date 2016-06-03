@@ -59,7 +59,7 @@ class Symbol(object):
 
     def word(self, word, sym2val):
         if 'is' == word:
-            return Is(self.symbol)
+            return SymbolIs(self.symbol)
         else:
             #TODO: do we handle numbers differently?
             return Error("Sorry, I don't (yet) know what to do with '%s' and '%s' together" % (self.symbol, word))
@@ -68,7 +68,7 @@ class Symbol(object):
         return 'Symbol ' + self.symbol
 
 
-class Is(object):
+class SymbolIs(object):
     def __init__(self, symbol):
         self.symbol = symbol
 
@@ -111,11 +111,31 @@ class Number(object):
             return Over(self.number)
         elif 'minus' == word:
             return Minus(self.number)
+        elif 'round' == word:
+            return Number(self.number.to_integral())
+        elif 'is' == word:
+            return NumberIs(self)
         else:
             return Error("I don't know what to do with the number %s and the word %s" % (str(self.number), word))
 
     def response(self):
         return str(self.number)
+
+
+class NumberIs(object):
+    def __init__(self, number):
+        self.number = number
+
+    def word(self, word, sym2val):
+        try:
+            number = Number(decimal.Decimal(word))
+            return Error("Sorry, I don't know how to make %s be %s" % (str(self.number), str(number)))
+        except decimal.InvalidOperation:
+            sym2val[word].append(self.number)
+            return self.number
+
+    def response(self):
+        return self.number + ' is . . .'
 
 
 class Times(object):
