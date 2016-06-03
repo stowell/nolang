@@ -1,0 +1,18 @@
+> 1671
+1671
+> is fair
+fair is 1671
+> 303
+303
+> is strike
+strike is 303
+> 108 times strike
+32724
+> over fair
+19.58
+> 108 minus that
+88.41
+> over 2
+44.20
+> round
+44
