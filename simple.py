@@ -1,6 +1,15 @@
 import collections
 import decimal
 
+from flask import (
+    Flask,
+    make_response,
+    request,
+)
+
+app = Flask(__name__)
+globalenv = collections.defaultdict(list)
+
 
 class Empty(object):
     def word(self, word, sym2val):
@@ -20,10 +29,13 @@ class Empty(object):
 
 
 class Program(object):
-    def __init__(self):
+    def __init__(self, sym2val=None):
         self.messages = []
         self.responses = []
-        self.sym2val = collections.defaultdict(list)
+        if sym2val is None:
+            self.sym2val = collections.defaultdict(list)
+        else:
+            self.sym2val = sym2val
 
     def message(self, message):
         words = message.split()
@@ -193,6 +205,50 @@ class Minus(object):
         return str(self.left) + ' minus . . .'
 
 
+def post2message(request):
+    return request.form.get('Body', '')
+    """
+    twilio_sms = TwilioSms(
+        message_sid=request.form.get('MessageSid', ''),
+        account_sid=request.form.get('AccountSid', ''),
+        messaging_service_sid=request.form.get('MessagingServiceSid', ''),
+        sending_phone_number=request.form.get('From', ''),
+        receiving_phone_number=request.form.get('To', ''),
+        body=request.form.get('Body', ''),
+        num_media=int(request.form.get('NumMedia', 0)),
+    )
+    return twilio_sms
+    """
+
+
+def get2message(request):
+    return request.args.get('Body', '')
+    """
+    twilio_sms = TwilioSms(
+        message_sid=request.args.get('MessageSid', ''),
+        account_sid=request.args.get('AccountSid', ''),
+        messaging_service_sid=request.args.get('MessagingServiceSid', ''),
+        sending_phone_number=request.args.get('From', ''),
+        receiving_phone_number=request.args.get('To', ''),
+        body=request.args.get('Body', ''),
+        num_media=int(request.args.get('NumMedia', 0)),
+    )
+    return twilio_sms
+    """
+
+
+def response2twiml(response):
+    xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Message>
+        <Body>{0}</Body>
+    </Message>
+</Response>'''.format(response)
+    response = make_response(xml, 200)
+    response.headers['Content-Type'] = 'text/xml'
+    return response
+
+
 def main():
     program = Program()
     while True:
@@ -206,5 +262,16 @@ def main():
         print program.message(message)
 
 
+@app.route('/echo', methods=('GET',))
+def echo_get():
+    message = get2message(request)
+    return response2twiml(message)
+
+@app.route('/echo', methods=('POST',))
+def echo_post():
+    message = post2message(request)
+    return response2twiml(message)
+
+
 if __name__ == '__main__':
-    main()
+    app.run()
