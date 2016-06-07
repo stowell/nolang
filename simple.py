@@ -262,15 +262,17 @@ def main():
         print program.message(message)
 
 
-@app.route('/echo', methods=('GET',))
-def echo_get():
+@app.route('/message', methods=('GET',))
+def message_get():
     message = get2message(request)
-    return response2twiml(message)
+    program = Program(sym2val=globalenv)
+    return response2twiml(program.message(message))
 
-@app.route('/echo', methods=('POST',))
-def echo_post():
+@app.route('/message', methods=('POST',))
+def message_post():
     message = post2message(request)
-    return response2twiml(message)
+    program = Program(sym2val=globalenv)
+    return response2twiml(program.message(message))
 
 
 if __name__ == '__main__':
