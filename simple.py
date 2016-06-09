@@ -8,7 +8,7 @@ from flask import (
 )
 
 app = Flask(__name__)
-globalenv = collections.defaultdict(list)
+phone2env = {}
 
 
 class Empty(object):
@@ -206,7 +206,7 @@ class Minus(object):
 
 
 def post2message(request):
-    return request.form.get('Body', '')
+    return (request.form.get('From', ''), request.form.get('Body', ''))
     """
     twilio_sms = TwilioSms(
         message_sid=request.form.get('MessageSid', ''),
@@ -222,7 +222,7 @@ def post2message(request):
 
 
 def get2message(request):
-    return request.args.get('Body', '')
+    return (request.args.get('From', ''), request.args.get('Body', ''))
     """
     twilio_sms = TwilioSms(
         message_sid=request.args.get('MessageSid', ''),
@@ -264,14 +264,24 @@ def main():
 
 @app.route('/message', methods=('GET',))
 def message_get():
-    message = get2message(request)
-    program = Program(sym2val=globalenv)
+    phone, message = get2message(request)
+    if phone in phone2env:
+        sym2val = phone2env[phone]
+    else:
+        sym2val = collections.defaultdict(list)
+        phone2env[phone] = sym2val
+    program = Program(sym2val=sym2val)
     return response2twiml(program.message(message))
 
 @app.route('/message', methods=('POST',))
 def message_post():
-    message = post2message(request)
-    program = Program(sym2val=globalenv)
+    phone, message = post2message(request)
+    if phone in phone2env:
+        sym2val = phone2env[phone]
+    else:
+        sym2val = collections.defaultdict(list)
+        phone2env[phone] = sym2val
+    program = Program(sym2val=sym2val)
     return response2twiml(program.message(message))
 
 
