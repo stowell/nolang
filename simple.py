@@ -38,7 +38,7 @@ class Program(object):
             self.sym2val = sym2val
 
     def message(self, message):
-        words = message.split()
+        words = message.lower().split()
         if len(words) == 0:
             return ''
         if 0 == len(self.sym2val['that']):
